@@ -5,20 +5,12 @@ import java.util.List;
 
 public class Main {
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
 
-        // Setup user
-        User userMisha = new User();
-        userMisha.setUserName("Misha");
-        userMisha.setAddress("Solomenskaya 1");
-        userMisha.setEmail("someEmailForMisha@mail.com");
-        userMisha.setVipStatus("VIP");
+        // Setup users
+        User userMisha = new User("Misha", "Solomenskaya 1", "someEmailForMisha@mail.com", "VIP");
 
-        User userVarya = new User();
-        userVarya.setUserName("Varya");
-        userVarya.setAddress("Solomenskaya 942");
-        userVarya.setEmail("someEmailForVarya@mail.com");
-        userVarya.setVipStatus("Simple");
+        User userVarya = new User("Varya", "Solomenskaya 942", "someEmailForVarya@mail.com", "Simple");
 
         List<User> users = new ArrayList<>();
         users.add(userMisha);
@@ -49,7 +41,6 @@ public class Main {
         Shop shop = new Shop();
         shop.setUsers(users);
         shop.setGoods(goods);
-
 
         // Отримати фінальну суму з корзини
         System.out.println("Фінальний рахунок по корзині: " + shoppingCart.getFinalPrice() + "\n");
@@ -87,7 +78,7 @@ public class Main {
         System.out.println(shop.getCheckForUser(userVarya));
 
         // Вивести чек у файл
-        shop.writeCheckToFile(userVarya);
+        shop.writeCheckToFile("Varya");
 
     }
 }

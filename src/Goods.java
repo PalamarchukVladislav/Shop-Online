@@ -1,7 +1,7 @@
 import java.math.BigDecimal;
 
 /**
- * Our Class for product
+ * Product class
  */
 
 public class Goods {
