@@ -1,3 +1,4 @@
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
@@ -10,20 +11,27 @@ import java.util.stream.IntStream;
 
 public class ShoppingCart {
 
-    List<Goods> goods = new ArrayList<>();
+    private List<Goods> goods = new ArrayList<>();
 
-    public Long getFinalPrice(){
-        return goods.stream().mapToLong(Goods::getPrice).sum();
+    public BigDecimal getFinalPrice(){
+
+        return goods.stream()
+                .map(Goods::getPrice)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
-    public List<Goods> copyCart(){
-        return new ArrayList<>(goods);
+    public ShoppingCart copyCart(){
+        ShoppingCart shoppingCart = new ShoppingCart();
+        shoppingCart.setGoods(goods);
+        return shoppingCart;
     }
 
-    public void removeGoodsByPrice(long price){
+    public void removeGoodsByPrice(Long price){
 
-        IntStream.range(0, goods.size()).filter(i -> goods.get(i).getPrice() > price)
-                .forEachOrdered(i -> goods.remove(i));
+        for (int i = 0; i < goods.size(); i++)
+            if (goods.get(i).getPrice().compareTo(BigDecimal.valueOf(price)) < 0) {
+                goods.remove(i);
+            }
     }
 
     @Override
@@ -31,5 +39,13 @@ public class ShoppingCart {
         return "ShoppingCart{" +
                 "goods=" + goods +
                 '}';
+    }
+
+    public List<Goods> getGoods() {
+        return goods;
+    }
+
+    public void setGoods(List<Goods> goods) {
+        this.goods = goods;
     }
 }

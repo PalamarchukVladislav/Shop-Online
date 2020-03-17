@@ -3,7 +3,7 @@ public class User {
     private String userName;
     private String address;
     private String email;
-    private Boolean vipStatus; // true = VIP
+    private String vipStatus; // true = VIP
 
     public String getUserName() {
         return userName;
@@ -25,11 +25,11 @@ public class User {
         this.email = email;
     }
 
-    public Boolean getVipStatus() {
+    public String getVipStatus() {
         return vipStatus;
     }
 
-    public void setVipStatus(Boolean vipStatus) {
+    public void setVipStatus(String vipStatus) {
         this.vipStatus = vipStatus;
     }
 
@@ -42,4 +42,5 @@ public class User {
                 ", vipStatus=" + vipStatus +
                 '}';
     }
+
 }

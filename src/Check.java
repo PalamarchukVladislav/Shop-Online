@@ -1,11 +1,12 @@
+import java.math.BigDecimal;
 import java.util.List;
 
-public class Check {
+public class Check { // TODO immutable
 
     private String userName;
     private String userAddress;
     private List<Goods> goods;
-    private Long FinalPrice;
+    private BigDecimal finalPrice;
 
     public void setUserName(String userName) {
         this.userName = userName;
@@ -19,8 +20,8 @@ public class Check {
         this.goods = goods;
     }
 
-    public void setFinalPrice(Long finalPrice) {
-        FinalPrice = finalPrice;
+    public void setFinalPrice(BigDecimal finalPrice) {
+        this.finalPrice = finalPrice;
     }
 
     @Override
@@ -29,7 +30,7 @@ public class Check {
                 "userName='" + userName + '\'' +
                 ", userAddress='" + userAddress + '\'' +
                 ", goods=" + goods +
-                ", FinalPrice=" + FinalPrice +
+                ", FinalPrice=" + finalPrice +
                 '}';
     }
 }

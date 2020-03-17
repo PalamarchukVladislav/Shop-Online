@@ -1,8 +1,14 @@
+import java.math.BigDecimal;
+
+/**
+ * Our Class for product
+ */
+
 public class Goods {
 
     private String name;
     private Long code;
-    private Long price;
+    private BigDecimal price;
 
     public String getName() {
         return name;
@@ -25,11 +31,11 @@ public class Goods {
         this.code = code;
     }
 
-    public Long getPrice() {
+    public BigDecimal getPrice() {
         return price;
     }
 
-    public void setPrice(Long price) {
+    public void setPrice(BigDecimal price) {
         this.price = price;
     }
 }

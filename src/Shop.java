@@ -1,10 +1,13 @@
+import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils.IO;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -20,11 +23,11 @@ import java.util.stream.Collectors;
 
 public class Shop {
 
-    List<User> users = new ArrayList<>();
+    private List<User> users = new ArrayList<>();
 
-    List<Goods> goods = new ArrayList<>();
+    private List<Goods> goods = new ArrayList<>();
 
-    Map<User, ShoppingCart> activeShoppingCart = new HashMap<>();
+    private Map<User, ShoppingCart> activeShoppingCart = new HashMap<>();
 
     public void setUsers(List<User> users) {
         this.users = users;
@@ -40,7 +43,7 @@ public class Shop {
 
     public List<User> getAllVipUsers(){
         return users.stream()
-                .filter(User::getVipStatus)
+                .filter(user -> user.getVipStatus().equals("VIP"))
                 .collect(Collectors.toList());
     }
 
@@ -49,17 +52,20 @@ public class Shop {
     }
 
     public ShoppingCart getShoppingCartForUser(User user){
-       return activeShoppingCart.get(user);
+        Optional<ShoppingCart> result = Optional.ofNullable(activeShoppingCart.get(user));
+
+
+        return result.orElse(null);
     }
 
-    public Set<User> getAllUsersWithCart(){
-        return activeShoppingCart.keySet();
+    public List<User> getAllUsersWithCart(){
+        return new ArrayList<>(activeShoppingCart.keySet());
     }
 
     public List<Goods> getGoodsByNameAndPrice(long price, String keyWord){
 
         return goods.stream()
-                .filter(productByPrice -> productByPrice.getPrice() < price)
+                .filter(productByPrice -> productByPrice.getPrice().compareTo(BigDecimal.valueOf(price)) < 0)
                 .filter(productByName -> productByName.getName().contains(keyWord))
                 .collect(Collectors.toList());
     }
@@ -74,19 +80,20 @@ public class Shop {
 
         check.setGoods(getActiveShoppingCart().entrySet().stream()
                 .filter(result -> result.getKey().equals(user))
-                .map(result -> result.getValue().goods).findFirst().get());
+                .map(result -> result.getValue().getGoods()).findFirst().get());
 
         check.setFinalPrice(shoppingCart.getFinalPrice());
 
         return check;
     }
 
-    public void writeCheckToFile(User user) throws IOException {
+    public void writeCheckToFile(User user) {
 
-        BufferedWriter writer = new BufferedWriter(new FileWriter("check for: " + user.getUserName()));
-        writer.write(String.valueOf(getCheckForUser(user)));
-
-        writer.close();
+        try(BufferedWriter writer = new BufferedWriter(new FileWriter("check for: " + user.getUserName()))) {
+            writer.write(String.valueOf(getCheckForUser(user)));
+        }catch (IOException e){
+            System.out.println(e);
+        }
 
     }
 

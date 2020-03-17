@@ -1,4 +1,5 @@
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,13 +12,13 @@ public class Main {
         userMisha.setUserName("Misha");
         userMisha.setAddress("Solomenskaya 1");
         userMisha.setEmail("someEmailForMisha@mail.com");
-        userMisha.setVipStatus(true);
+        userMisha.setVipStatus("VIP");
 
         User userVarya = new User();
         userVarya.setUserName("Varya");
         userVarya.setAddress("Solomenskaya 942");
         userVarya.setEmail("someEmailForVarya@mail.com");
-        userVarya.setVipStatus(false);
+        userVarya.setVipStatus("Simple");
 
         List<User> users = new ArrayList<>();
         users.add(userMisha);
@@ -26,13 +27,13 @@ public class Main {
         // Setup apple product
         Goods apple = new Goods();
         apple.setName("Apple");
-        apple.setPrice(100L);
+        apple.setPrice(new BigDecimal(100));
         apple.setCode(4241512L);
 
         // Setup computer product
         Goods computer = new Goods();
         computer.setName("Dell latitude");
-        computer.setPrice(15000L);
+        computer.setPrice(new BigDecimal(15000));
         computer.setCode(935211L);
 
         List<Goods> goods = new ArrayList<>();
@@ -41,8 +42,8 @@ public class Main {
 
         // Setup shopping cart
         ShoppingCart shoppingCart = new ShoppingCart();
-        shoppingCart.goods.add(apple);
-        shoppingCart.goods.add(computer);
+        shoppingCart.getGoods().add(apple);
+        shoppingCart.getGoods().add(computer);
 
         // Setup shop
         Shop shop = new Shop();
@@ -77,13 +78,13 @@ public class Main {
         System.out.println("Список юзерів з корзиною:");
         System.out.println(shop.getAllUsersWithCart() + "\n");
 
-        // Отримати усі товари, якщо у назві є %слово% та ціна нижча за %ціна%
+        // Отримати усі товари, якщо ціна нижча за %ціна% та має у собі %слово%
         System.out.println("Товари де у назві є 'latitude' та ціна на них менша за 16000:");
         System.out.println(shop.getGoodsByNameAndPrice(16000, "latitude") + "\n");
 
         // Отримати чек для корзини для визначеного юзера
         System.out.println("Чек для юзера Варя: ");
-        System.out.println(shop.getCheckForUser(userVarya).toString());
+        System.out.println(shop.getCheckForUser(userVarya));
 
         // Вивести чек у файл
         shop.writeCheckToFile(userVarya);
