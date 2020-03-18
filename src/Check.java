@@ -1,27 +1,28 @@
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
-public class Check { // TODO immutable
+/**
+ * Immutable class
+ */
 
-    private String userName;
-    private String userAddress;
-    private List<Goods> goods;
-    private BigDecimal finalPrice;
+public final class Check {
 
-    public void setUserName(String userName) {
+    private final String userName;
+    private final String userAddress;
+    private final List<Goods> goods;
+    private final BigDecimal finalPrice;
+
+
+    /**
+     * Constructor performing Deep Copy
+     */
+    public Check(String userName, String userAddress, List<Goods> goods, BigDecimal finalPrice) {
         this.userName = userName;
-    }
-
-    public void setUserAddress(String userAddress) {
         this.userAddress = userAddress;
-    }
-
-    public void setGoods(List<Goods> goods) {
-        this.goods = goods;
-    }
-
-    public void setFinalPrice(BigDecimal finalPrice) {
         this.finalPrice = finalPrice;
+
+        this.goods = new ArrayList<>(goods);
     }
 
     @Override

@@ -1,4 +1,3 @@
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +31,14 @@ public class Main {
         goods.add(apple);
         goods.add(computer);
 
+        // set Goods for Varya
+        List<Goods> goodsForVarya = new ArrayList<>();
+        goodsForVarya.add(apple);
+
+        // set Goods for Misha
+        List<Goods> goodsForMisha = new ArrayList<>();
+        goodsForMisha.add(computer);
+
         // Setup shopping cart
         ShoppingCart shoppingCart = new ShoppingCart();
         shoppingCart.getGoods().add(apple);
@@ -49,21 +56,21 @@ public class Main {
         System.out.println("Копія корзини: " + shoppingCart.copyCart().toString() + "\n");
 
         // Забрати усі товари, ціна на які вища за %ціна%
-        shoppingCart.removeGoodsByPrice(200L);
         System.out.println("Без товарів де ціна вища за 200:");
-        System.out.println(shoppingCart.toString() + "\n");
+        System.out.println(shoppingCart.removeGoodsByPrice(200L) + "\n");
 
         // Отримати список усіх віп юзерів
         System.out.println("Cписок усіх віп юзерів:");
         System.out.println(shop.getAllVipUsers().toString() + "\n");
 
         // Створити корзину для юзера
-        shop.createCartForUser(userVarya);
+        shop.createCartForUser(userVarya, goodsForVarya);
+        shop.createCartForUser(userMisha, goodsForMisha);
 
         // Отримати корзину для юзера
         System.out.println("Юзери з корзинами чи без:");
-        System.out.println(shop.getShoppingCartForUser(userVarya));
-        System.out.println(shop.getShoppingCartForUser(userMisha) + "\n"); // null
+        System.out.println(userVarya.getUserName() + " " + shop.getShoppingCartForUser(userVarya));
+        System.out.println(userMisha.getUserName() + " " + shop.getShoppingCartForUser(userMisha) + "\n");
 
         // Отрмати усіх юзерів з корзиною
         System.out.println("Список юзерів з корзиною:");
@@ -78,7 +85,7 @@ public class Main {
         System.out.println(shop.getCheckForUser(userVarya));
 
         // Вивести чек у файл
-        shop.writeCheckToFile("Varya");
+        shop.writeCheckToFile("Va1rya");
 
     }
 }

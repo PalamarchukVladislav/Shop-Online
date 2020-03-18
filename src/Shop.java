@@ -2,12 +2,11 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.nio.file.NoSuchFileException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
+import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -23,7 +22,7 @@ public class Shop {
 
     private List<Goods> goods = new ArrayList<>();
 
-    private Map<User, ShoppingCart> activeShoppingCart = new HashMap<>();
+    private Map<ShoppingCart, User> activeShoppingCart = new HashMap<>(); // TODO change key and value
 
     public void setUsers(List<User> users) {
         this.users = users;
@@ -33,28 +32,29 @@ public class Shop {
         this.goods = goods;
     }
 
-    public Map<User, ShoppingCart> getActiveShoppingCart() {
-        return activeShoppingCart;
-    } // TODO change key and value
-
     public List<User> getAllVipUsers() {
         return users.stream()
                 .filter(user -> user.getVipStatus().equals("VIP"))
                 .collect(Collectors.toList());
     }
 
-    public void createCartForUser(User user) {
-        activeShoppingCart.put(user, new ShoppingCart());
+    public void createCartForUser(User user, List<Goods> goods) {
+        ShoppingCart shoppingCart = new ShoppingCart();
+        shoppingCart.setGoods(goods);
+        activeShoppingCart.put(shoppingCart, user);
     }
 
     public ShoppingCart getShoppingCartForUser(User user) {
-        Optional<ShoppingCart> result = Optional.ofNullable(activeShoppingCart.get(user));
+        Optional<ShoppingCart> result = activeShoppingCart.entrySet().stream()
+                .filter(set -> set.getValue().equals(user))
+                .map(Entry::getKey)
+                .findFirst();
 
-        return result.orElse(null);
+        return result.orElseGet(ShoppingCart::new);
     }
 
     public List<User> getAllUsersWithCart() {
-        return new ArrayList<>(activeShoppingCart.keySet());
+        return new ArrayList<>(activeShoppingCart.values());
     }
 
     public List<Goods> getGoodsByNameAndPrice(long price, String keyWord) {
@@ -65,30 +65,25 @@ public class Shop {
                 .collect(Collectors.toList());
     }
 
-    public Check getCheckForUser(User user) { // TODO one stream and why final result always 0
-        Check check = new Check();
 
-        ShoppingCart shoppingCart = activeShoppingCart.get(user);
+    public Check getCheckForUser(User user) {
 
-        check.setUserName(user.getUserName());
-        check.setUserAddress(user.getAddress());
+        ShoppingCart shoppingCart = activeShoppingCart.entrySet().stream()
+                .filter(set -> set.getValue().equals(user))
+                .map(Entry::getKey)
+                .findFirst().get();
 
-        check.setGoods(getActiveShoppingCart().entrySet().stream()
-                .filter(result -> result.getKey().equals(user))
-                .map(result -> result.getValue().getGoods()).findFirst().get());
+        return new Check(user.getUserName(), user.getAddress(), shoppingCart.getGoods(), shoppingCart.getFinalPrice());
 
-        check.setFinalPrice(shoppingCart.getFinalPrice());
-
-        return check;
     }
 
     public void writeCheckToFile(String name) {
 
-            try (BufferedWriter writer = new BufferedWriter(new FileWriter("check for: " + name))) {
-                writer.write(String.valueOf(getCheckForUser(getUser(name).get()))); //TODO fix exception
-            } catch (IOException e) {
-                System.out.println();
-            }
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter("check for: " + name))) {
+            writer.write(String.valueOf(getCheckForUser(getUser(name).get())));
+        } catch (IOException e) {
+            System.out.println();
+        }
 
     }
 
